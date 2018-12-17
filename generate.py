@@ -1,43 +1,50 @@
 import re
 
-# initial variables
-inputStr = "aabcaa"
-output = ""
-maxChars = len(inputStr) / 2
-idx = 0
+# get rid of repetitions n steps away
+def shrink(inputStr, nbSteps):
+    idx = 0
+    output = ""
+    while idx < len(inputStr):
+        print(idx)
 
-# get rid of repetitions 1 step away
-while idx < len(inputStr):
-    print(idx)
-    # get the current letter and append to output
-    letter = inputStr[idx]
-    output += letter
-    print(letter)
+        # get the current letter and append to output
+        letter = inputStr[idx:idx+nbSteps]
+        print("letter:", letter)
 
-    # get the index of the next character
-    innerIdx = idx + 1
-    if innerIdx >= len(inputStr):
-        break
-
-    # skip repeating letters 1 step away
-    compLetter = inputStr[innerIdx]
-    isSkipped = False
-    while compLetter == letter:
-        innerIdx += 1
-        isSkipped = True
-        if innerIdx >= len(inputStr):
-            break
-        compLetter = inputStr[innerIdx]
-
-    # if any character was skipped, add + token
-    if isSkipped:
-        output += "+"
+        # get the index of the next character
+        innerIdx = idx + nbSteps
+        
+        # get tokens n steps long and compare with current token
+        compLetter = inputStr[innerIdx:innerIdx+nbSteps]
+        print("compLetter:", compLetter)
         isSkipped = False
-    
-    # set the index to reflect the skip
-    idx = innerIdx
+        while compLetter == letter:
+            innerIdx += nbSteps
+            isSkipped = True
+            if innerIdx > len(inputStr):
+                break
+            compLetter = inputStr[innerIdx:innerIdx+nbSteps]
+
+        # if any character was skipped, add + token
+        if isSkipped:
+            output += "(" + letter + ")+"
+            isSkipped = False
+            idx = innerIdx
+        # set the index to reflect the skip
+        else:
+            output += letter[0]
+            idx += 1
+
+    return output
+
+# initial variables
+inputStr = "aaaaaaaabcabcabca"
+maxChars = len(inputStr) / 2
+
+# tests
+output = shrink(inputStr, 1)
+output = shrink(output, 2)
+output = shrink(output, 3)
 
 # print the resulting shortened regex string
 print("Result:", output)
-
-# modify the above to remove repetitions n steps away
