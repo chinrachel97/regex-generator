@@ -66,7 +66,7 @@ def hasSameItem(row):
 def createCommPattern(inputStrings):
     # sort the input strings by length
     inputStrings.sort(key=len, reverse=True)
-
+    
     # initial variables
     commPattern = ""
     inputMatrix = composeMatrix(inputStrings)
@@ -74,17 +74,18 @@ def createCommPattern(inputStrings):
     
     # loop through each row in the matrix
     for rowIdx in range(len(inputMatrix)):
-        row = inputMatrix[rowIdx]
         # make the adjusted row 
+        row = inputMatrix[rowIdx]
         adjustedRow = []
         for i in range(len(row)):
             adjustment = idxAdjustments[i]
-            adjustedRow.append(row[i + adjustment])
+            if rowIdx + adjustment >= len(inputMatrix):
+                return commPattern
+            adjustedRow.append(inputMatrix[rowIdx + adjustment][i])
 
         # skip rows 
         if hasSameItem(adjustedRow):
             print(adjustedRow)
-
             if adjustedRow[0] == "EOS":
                 return commPattern
         
@@ -96,10 +97,7 @@ def createCommPattern(inputStrings):
         while inputMatrix[rowIdx+adjustment][0] != row[1]:
             commPattern += inputMatrix[rowIdx+adjustment][0] + "?"
             adjustment += 1
-            print(rowIdx+adjustment)
-            if (rowIdx+adjustment) > len(inputMatrix):
-                print("No more commonalities.")
-                commPattern += ".*"
+            if (rowIdx+adjustment) >= len(inputMatrix):
                 return commPattern
                 
         idxAdjustments[0] = adjustment
@@ -108,7 +106,9 @@ def createCommPattern(inputStrings):
         adjustedRow = []
         for i in range(len(row)):
             adjustment = idxAdjustments[i]
-            adjustedRow.append(row[i + adjustment])
+            if rowIdx + adjustment >= len(inputMatrix):
+                return commPattern
+            adjustedRow.append(inputMatrix[rowIdx + adjustment][i])
 
         # print the result
         if adjustedRow[0] == "EOS":
@@ -144,6 +144,6 @@ print(m)
 
 ### Test 3 ###
 print("Testing createCommPattern():")
-inputStrings = ["aabc", "abc"]
+inputStrings = ["aaaaabccc", "abc"]
 commPattern = createCommPattern(inputStrings)
 print(commPattern)
