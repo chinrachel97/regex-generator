@@ -37,6 +37,27 @@ def shrink(inputStr, nbSteps):
 
     return output
 
+# compose a [max strlen] x [# of strings] char matrix given input strings
+def composeMatrix(inputStrings):
+    inputStringsLen = [len(s) for s in inputStrings]
+    maxStrLen = 0
+    for s in inputStrings:
+        maxStrLen = max(inputStringsLen)
+    
+    m = [[] for x in range(maxStrLen)]
+    for row in range(maxStrLen):
+        for s in inputStrings:
+            if row < len(s):
+                m[row].append(s[row])
+            else:
+                m[row].append("EOS")
+    
+    return m        
+
+
+### Test 1 ###
+print("Testing shrink():")
+
 # initial variables
 inputStr = "aaaaaaaabcabcabca"
 maxChars = len(inputStr) / 2
@@ -48,3 +69,9 @@ output = shrink(output, 3)
 
 # print the resulting shortened regex string
 print("Result:", output)
+
+
+### Test 2 ###
+print("Testing composeMatrix():")
+inputStrings = ["aabc", "abc"]
+print(composeMatrix(inputStrings))
