@@ -39,11 +39,15 @@ def shrink(inputStr, nbSteps):
 
 # compose a [max strlen] x [# of strings] char matrix given input strings
 def composeMatrix(inputStrings):
+    # initialize a list with the length of the input strings
     inputStringsLen = [len(s) for s in inputStrings]
+
+    # get the maximum string length
     maxStrLen = 0
     for s in inputStrings:
         maxStrLen = max(inputStringsLen)
     
+    # create the matrix of input string characters
     m = [[] for x in range(maxStrLen)]
     for row in range(maxStrLen):
         for s in inputStrings:
@@ -53,6 +57,66 @@ def composeMatrix(inputStrings):
                 m[row].append("EOS")
     
     return m        
+
+# check if all items in a list are the same item
+def hasSameItem(row):
+    return all(item == row[0] for item in row)
+
+# compare all input strings and compile a general regex
+def createCommPattern(inputStrings):
+    # sort the input strings by length
+    inputStrings.sort(key=len, reverse=True)
+
+    # initial variables
+    commPattern = ""
+    inputMatrix = composeMatrix(inputStrings)
+    idxAdjustments = [0 for x in range(len(inputMatrix[0]))]
+    
+    # loop through each row in the matrix
+    for rowIdx in range(len(inputMatrix)):
+        row = inputMatrix[rowIdx]
+        # make the adjusted row 
+        adjustedRow = []
+        for i in range(len(row)):
+            adjustment = idxAdjustments[i]
+            adjustedRow.append(row[i + adjustment])
+
+        # skip rows 
+        if hasSameItem(adjustedRow):
+            print(adjustedRow)
+
+            if adjustedRow[0] == "EOS":
+                return commPattern
+        
+            commPattern += adjustedRow[0]
+            continue
+
+        # try naive approach: if not same letter, skip to next row
+        adjustment = idxAdjustments[0]
+        while inputMatrix[rowIdx+adjustment][0] != row[1]:
+            commPattern += inputMatrix[rowIdx+adjustment][0] + "?"
+            adjustment += 1
+            print(rowIdx+adjustment)
+            if (rowIdx+adjustment) > len(inputMatrix):
+                print("No more commonalities.")
+                commPattern += ".*"
+                return commPattern
+                
+        idxAdjustments[0] = adjustment
+
+        # make the adjusted row 
+        adjustedRow = []
+        for i in range(len(row)):
+            adjustment = idxAdjustments[i]
+            adjustedRow.append(row[i + adjustment])
+
+        # print the result
+        if adjustedRow[0] == "EOS":
+            return commPattern
+        commPattern += adjustedRow[0]
+        print(adjustedRow)
+
+    return commPattern
 
 
 ### Test 1 ###
@@ -74,4 +138,12 @@ print("Result:", output)
 ### Test 2 ###
 print("Testing composeMatrix():")
 inputStrings = ["aabc", "abc"]
-print(composeMatrix(inputStrings))
+m = composeMatrix(inputStrings)
+print(m)
+
+
+### Test 3 ###
+print("Testing createCommPattern():")
+inputStrings = ["aabc", "abc"]
+commPattern = createCommPattern(inputStrings)
+print(commPattern)
