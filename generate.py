@@ -1,32 +1,33 @@
 import re
 
 # initial variables
-input = "aaabccccdeef"
+inputStr = "aabcaa"
 output = ""
-maxChars = len(input) / 2
+maxChars = len(inputStr) / 2
 idx = 0
 
 # get rid of repetitions 1 step away
-while idx < len(input):
+while idx < len(inputStr):
+    print(idx)
     # get the current letter and append to output
-    letter = input[idx]
+    letter = inputStr[idx]
     output += letter
     print(letter)
 
     # get the index of the next character
     innerIdx = idx + 1
-    if innerIdx >= len(input):
+    if innerIdx >= len(inputStr):
         break
 
     # skip repeating letters 1 step away
-    compLetter = input[innerIdx]
+    compLetter = inputStr[innerIdx]
     isSkipped = False
     while compLetter == letter:
         innerIdx += 1
-        if innerIdx >= len(input):
-            break
-        compLetter = input[innerIdx]
         isSkipped = True
+        if innerIdx >= len(inputStr):
+            break
+        compLetter = inputStr[innerIdx]
 
     # if any character was skipped, add + token
     if isSkipped:
