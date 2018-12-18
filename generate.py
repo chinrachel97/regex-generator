@@ -66,12 +66,29 @@ def hasSameItem(row):
 def createCommPattern(inputStrings):
     # sort the input strings by length
     inputStrings.sort(key=len, reverse=True)
+
+    # check which case the input strings fall into
+    areSameLength = all(len(s) == len(inputStrings[0]) for s in inputStrings)
+    print(areSameLength)
     
     # initial variables
     commPattern = ""
     inputMatrix = composeMatrix(inputStrings)
     idxAdjustments = [0 for x in range(len(inputMatrix[0]))]
     
+    # if the input strings have the same length, don't use any adjustments
+    if areSameLength:
+        for rowIdx in range(len(inputMatrix)):
+            row = inputMatrix[rowIdx]
+            if hasSameItem(row):
+                commPattern += row[0]
+            else:
+                commPattern += "[" 
+                for item in row:
+                    commPattern += item
+                commPattern += "]"
+        return commPattern
+
     # loop through each row in the matrix
     for rowIdx in range(len(inputMatrix)):
         # make the adjusted row 
@@ -97,7 +114,9 @@ def createCommPattern(inputStrings):
         while inputMatrix[rowIdx+adjustment][0] != row[1]:
             commPattern += inputMatrix[rowIdx+adjustment][0] + "?"
             adjustment += 1
+            
             if (rowIdx+adjustment) >= len(inputMatrix):
+                print("?????")
                 return commPattern
                 
         idxAdjustments[0] = adjustment
@@ -144,6 +163,6 @@ print(m)
 
 ### Test 3 ###
 print("Testing createCommPattern():")
-inputStrings = ["aaaaabccc", "abc"]
+inputStrings = ["sed", "abc"]
 commPattern = createCommPattern(inputStrings)
 print(commPattern)
